@@ -28,7 +28,7 @@ public class Role {
     @Type(type = "uuid-char")
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
 }

@@ -4,6 +4,7 @@ import com.ecore.roles.service.TeamsService;
 import com.ecore.roles.web.TeamsApi;
 import com.ecore.roles.web.dto.TeamDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +29,7 @@ public class TeamsRestController implements TeamsApi {
             produces = {"application/json"})
     public ResponseEntity<List<TeamDto>> getTeams() {
         return ResponseEntity
-                .status(200)
+                .status(HttpStatus.OK)
                 .body(teamsService.getTeams().stream()
                         .map(TeamDto::fromModel)
                         .collect(Collectors.toList()));
@@ -41,7 +42,7 @@ public class TeamsRestController implements TeamsApi {
     public ResponseEntity<TeamDto> getTeam(
             @PathVariable UUID teamId) {
         return ResponseEntity
-                .status(200)
+                .status(HttpStatus.OK)
                 .body(fromModel(teamsService.getTeam(teamId)));
     }
 

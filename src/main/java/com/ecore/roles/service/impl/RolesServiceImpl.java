@@ -12,6 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,21 +37,21 @@ public class RolesServiceImpl implements RolesService {
     }
 
     @Override
-    public Role CreateRole(@NonNull Role r) {
-        if (roleRepository.findByName(r.getName()).isPresent()) {
+    public Role createRole(@NonNull Role role) {
+        if (roleRepository.findByName(role.getName()).isPresent()) {
             throw new ResourceExistsException(Role.class);
         }
-        return roleRepository.save(r);
+        return roleRepository.save(role);
     }
 
     @Override
-    public Role GetRole(@NonNull UUID rid) {
-        return roleRepository.findById(rid)
-                .orElseThrow(() -> new ResourceNotFoundException(Role.class, rid));
+    public Role getRole(@NonNull UUID roleId) {
+        return roleRepository.findById(roleId)
+                .orElseThrow(() -> new ResourceNotFoundException(Role.class, roleId));
     }
 
     @Override
-    public List<Role> GetRoles() {
+    public List<Role> getRoles() {
         return roleRepository.findAll();
     }
 
@@ -58,4 +59,16 @@ public class RolesServiceImpl implements RolesService {
         return roleRepository.findByName(DEFAULT_ROLE)
                 .orElseThrow(() -> new IllegalStateException("Default role is not configured"));
     }
+
+    @Override
+    public Role getRole(@NonNull UUID userId, @NonNull UUID teamId) {
+        Role role = membershipsService.getRole(userId, teamId);
+        if (role != null) {
+            return role;
+        } else {
+            throw new EntityNotFoundException(
+                    "Membership not found for userId: " + userId + " and teamId: " + teamId);
+        }
+    }
+
 }

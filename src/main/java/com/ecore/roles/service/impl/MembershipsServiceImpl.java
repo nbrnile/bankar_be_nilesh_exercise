@@ -13,7 +13,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Optional.ofNullable;
@@ -34,22 +36,38 @@ public class MembershipsServiceImpl implements MembershipsService {
     }
 
     @Override
-    public Membership assignRoleToMembership(@NonNull Membership m) {
+    public Membership assignRoleToMembership(@NonNull Membership membership) {
 
-        UUID roleId = ofNullable(m.getRole()).map(Role::getId)
+        UUID roleId = ofNullable(membership.getRole()).map(Role::getId)
                 .orElseThrow(() -> new InvalidArgumentException(Role.class));
 
-        if (membershipRepository.findByUserIdAndTeamId(m.getUserId(), m.getTeamId())
+        if (membershipRepository.findByUserIdAndTeamId(membership.getUserId(), membership.getTeamId())
                 .isPresent()) {
             throw new ResourceExistsException(Membership.class);
         }
 
-        roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException(Role.class, roleId));
-        return membershipRepository.save(m);
+        roleRepository.findById(roleId)
+                .orElseThrow(() -> new ResourceNotFoundException(Role.class, roleId));
+
+        return membershipRepository.save(membership);
     }
 
     @Override
-    public List<Membership> getMemberships(@NonNull UUID rid) {
-        return membershipRepository.findByRoleId(rid);
+    public List<Membership> getMemberships(@NonNull UUID roleId) {
+        return membershipRepository.findByRoleId(roleId);
+    }
+
+    @Override
+    public Role getRole(UUID userId, UUID teamId) {
+        Optional<Membership> membership = membershipRepository.findByUserIdAndTeamId(userId, teamId);
+        Role role = new Role();
+        if (membership.isPresent()) {
+
+            role.setId(membership.get().getRole().getId());
+            role.setName(membership.get().getRole().getName());
+            return role;
+        } else {
+            throw new EntityNotFoundException("Team %s not found");
+        }
     }
 }

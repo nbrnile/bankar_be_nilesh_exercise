@@ -32,6 +32,6 @@ public class UsersClient {
                 clientsConfigurationProperties.getUsersApiHost(),
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<>() {});
+                new ParameterizedTypeReference<List<User>>() {});
     }
 }

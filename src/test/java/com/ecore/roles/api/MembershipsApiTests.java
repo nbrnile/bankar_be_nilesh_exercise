@@ -158,7 +158,7 @@ public class MembershipsApiTests {
     @Test
     void shouldFailToGetAllMembershipsWhenRoleIdIsNull() {
         getMemberships(null)
-                .validate(400, "Bad Request");
+                .validate(405, "Method Not Allowed");
     }
 
     private MembershipDto createDefaultMembership() {

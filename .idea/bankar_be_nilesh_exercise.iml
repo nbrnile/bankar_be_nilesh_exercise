@@ -98,7 +98,7 @@
     <orderEntry type="library" name="Maven: jakarta.xml.bind:jakarta.xml.bind-api:2.3.3" level="project" />
     <orderEntry type="library" name="Maven: jakarta.activation:jakarta.activation-api:1.2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.assertj:assertj-core:3.21.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest:2.2" level="project" />
+    <orderEntry type="library" name="Maven: org.hamcrest:hamcrest:2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter:5.8.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-api:5.8.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.opentest4j:opentest4j:1.2.0" level="project" />
@@ -132,5 +132,22 @@
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.12.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.h2database:h2:1.4.200" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: mysql:mysql-connector-java:8.0.28" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.jersey:jersey-bundle:1.19.4" level="project" />
+    <orderEntry type="library" name="Maven: javax.ws.rs:jsr311-api:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: junit:junit:4.13.2" level="project" />
+    <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:2.2" level="project" />
+    <orderEntry type="library" name="Maven: com.diffplug.spotless:spotless-maven-plugin:2.33.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.diffplug.spotless:spotless-lib:2.35.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.diffplug.spotless:spotless-lib-extra:2.35.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.googlecode.concurrent-trees:concurrent-trees:2.6.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.diffplug.durian:durian-core:1.2.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.diffplug.durian:durian-collect:1.2.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.codehaus.plexus:plexus-resources:1.2.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.codehaus.plexus:plexus-utils:3.4.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: javax.inject:javax.inject:1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.eclipse.jgit:org.eclipse.jgit:6.4.0.202211300538-r" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.googlecode.javaewah:JavaEWAH:1.1.13" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.sonatype.plexus:plexus-build-api:0.0.7" level="project" />
   </component>
 </module>

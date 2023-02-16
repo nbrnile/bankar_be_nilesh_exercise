@@ -3,6 +3,7 @@ package com.ecore.roles.service;
 import com.ecore.roles.exception.InvalidArgumentException;
 import com.ecore.roles.exception.ResourceExistsException;
 import com.ecore.roles.model.Membership;
+import com.ecore.roles.model.Role;
 import com.ecore.roles.repository.MembershipRepository;
 import com.ecore.roles.repository.RoleRepository;
 import com.ecore.roles.service.impl.MembershipsServiceImpl;
@@ -12,7 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.ecore.roles.utils.TestData.DEFAULT_MEMBERSHIP;
 import static com.ecore.roles.utils.TestData.DEVELOPER_ROLE;
@@ -100,4 +103,63 @@ class MembershipsServiceTest {
                 () -> membershipsService.getMemberships(null));
     }
 
+    @Test
+    public void testGetRoleWithDatabaseException() {
+        // Create input values for the method
+        UUID userId = UUID.randomUUID();
+        UUID teamId = UUID.randomUUID();
+
+        // Mock the repository to throw a runtime exception
+        when(membershipRepository.findByUserIdAndTeamId(userId, teamId))
+                .thenThrow(new RuntimeException("Database error"));
+
+        // Call the method and verify the exception message
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            membershipsService.getRole(userId, teamId);
+        });
+        assertEquals("Database error", exception.getMessage());
+    }
+
+    @Test
+    public void testGetRoleWithNonExistentMembership() {
+        // Create a mock membership object without a role
+        UUID userId = UUID.randomUUID();
+        UUID teamId = UUID.randomUUID();
+        Membership membership = new Membership();
+        membership.setUserId(userId);
+        membership.setTeamId(teamId);
+
+        // Mock the repository to return an empty optional
+        when(membershipRepository.findByUserIdAndTeamId(userId, teamId))
+                .thenReturn(Optional.empty());
+
+        // Call the method and verify the exception message
+        Exception exception = assertThrows(EntityNotFoundException.class, () -> {
+            membershipsService.getRole(userId, teamId);
+        });
+        assertEquals("Team %s not found", exception.getMessage());
+    }
+
+    @Test
+    public void testGetRoleWithValidMembership() {
+        // Create a mock membership object with a role
+        UUID userId = UUID.randomUUID();
+        UUID teamId = UUID.randomUUID();
+        Role role = new Role();
+        role.setId(UUID.randomUUID());
+        role.setName("Admin");
+        Membership membership = new Membership();
+        membership.setUserId(userId);
+        membership.setTeamId(teamId);
+        membership.setRole(role);
+
+        // Mock the repository to return the membership
+        when(membershipRepository.findByUserIdAndTeamId(userId, teamId))
+                .thenReturn(Optional.of(membership));
+
+        // Call the method and verify the returned role
+        Role result = membershipsService.getRole(userId, teamId);
+        assertEquals(role.getId(), result.getId());
+        assertEquals(role.getName(), result.getName());
+    }
 }

@@ -3,17 +3,25 @@ package com.ecore.roles.api;
 import com.ecore.roles.model.Membership;
 import com.ecore.roles.model.Role;
 import com.ecore.roles.repository.RoleRepository;
+import com.ecore.roles.service.RolesService;
 import com.ecore.roles.utils.RestAssuredHelper;
 import com.ecore.roles.web.dto.RoleDto;
+import com.ecore.roles.web.rest.RolesRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.ecore.roles.utils.MockUtils.mockGetTeamById;
 import static com.ecore.roles.utils.RestAssuredHelper.createMembership;
@@ -34,6 +42,7 @@ import static io.restassured.RestAssured.when;
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RolesApiTest {
@@ -42,6 +51,10 @@ public class RolesApiTest {
     private final RoleRepository roleRepository;
 
     private MockRestServiceServer mockServer;
+    @Mock
+    private RolesService rolesService;
+
+    private RolesRestController rolesController;
 
     @LocalServerPort
     private int port;
@@ -58,6 +71,8 @@ public class RolesApiTest {
         RestAssuredHelper.setUp(port);
         Optional<Role> devOpsRole = roleRepository.findByName(DEVOPS_ROLE().getName());
         devOpsRole.ifPresent(roleRepository::delete);
+        MockitoAnnotations.openMocks(this);
+        rolesController = new RolesRestController(rolesService);
     }
 
     @Test
@@ -158,5 +173,21 @@ public class RolesApiTest {
         mockGetTeamById(mockServer, UUID_1, null);
         getRole(GIANNI_USER_UUID, UUID_1)
                 .validate(404, format("Team %s not found", UUID_1));
+    }
+
+    @Test
+    void getRole_whenMembershipFound_returnsRoleDto() {
+        UUID userId = UUID.randomUUID();
+        UUID teamId = UUID.randomUUID();
+        Membership membership = new Membership();
+        Role role = new Role();
+        role.setId(UUID.randomUUID());
+        role.setName("Test Role");
+        membership.setRole(role);
+        Mockito.when(rolesService.getRole(userId, teamId)).thenReturn(new Role());
+
+        ResponseEntity<RoleDto> response = rolesController.getRole(userId, teamId);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }

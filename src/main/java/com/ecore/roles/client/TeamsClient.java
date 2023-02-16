@@ -32,6 +32,6 @@ public class TeamsClient {
                 clientsConfigurationProperties.getTeamsApiHost(),
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<>() {});
+                new ParameterizedTypeReference<List<Team>>() {});
     }
 }
